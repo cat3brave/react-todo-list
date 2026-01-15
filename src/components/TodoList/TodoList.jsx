@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { InputTodo } from "./InputTodo";
+import { TodoItem } from "./TodoItem";
 
 export const TodoList = () => {
   const [inputText, setInputText] = useState("");
@@ -53,17 +55,11 @@ export const TodoList = () => {
   return (
     <div style={{ padding: "20px", fontFamily: "sans-serif" }}>
       <h1>買い物リスト</h1>
-      <div style={{ marginBottom: "20px" }}>
-        <input
-          placeholder="買うものを入力"
-          value={inputText}
-          onChange={(e) => setInputText(e.target.value)}
-          style={{ padding: "8px", marginRight: "8px" }}
-        />
-        <button onClick={onClickAdd} style={{ padding: "8px" }}>
-          追加
-        </button>
-      </div>
+      <InputTodo
+        inputText={inputText}
+        setInputText={setInputText}
+        onClickAdd={onClickAdd}
+      />
 
       <div
         style={{
@@ -76,29 +72,12 @@ export const TodoList = () => {
           {todos.map((todo) => {
             // indexはもう使いません
             return (
-              <li
-                // 【変更点4】 keyに一意なidを指定する
-                key={todo.id}
-                style={{
-                  marginBottom: "8px",
-                  display: "flex",
-                  alignItems: "center",
-                  textDecoration: todo.completed ? "line-through" : "none",
-                  color: todo.completed ? "gray" : "black",
-                }}
-              >
-                <span style={{ marginRight: "10px" }}>{todo.text}</span>
-
-                <button
-                  // idを渡す
-                  onClick={() => onClickComplete(todo.id)}
-                  style={{ marginRight: "5px" }}
-                >
-                  {todo.completed ? "戻す" : "完了"}
-                </button>
-
-                <button onClick={() => onClickDelete(todo.id)}>削除</button>
-              </li>
+              <TodoItem
+                key={todo.id} // keyにはidを使う
+                todo={todo}
+                onClickComplete={onClickComplete}
+                onClickDelete={onClickDelete}
+              />
             );
           })}
         </ul>
