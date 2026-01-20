@@ -13,6 +13,8 @@ export const TodoList = () => {
     }
   });
 
+  const [filter, setFilter] = useState("all");
+
   useEffect(() => {
     localStorage.setItem("todos_list_data", JSON.stringify(todos));
   }, [todos]);
@@ -52,37 +54,75 @@ export const TodoList = () => {
     setTodos(newTodos);
   };
 
-  return (
-    <div style={{ padding: "20px", fontFamily: "sans-serif" }}>
-      <h1>買い物リスト</h1>
-      <InputTodo
-        inputText={inputText}
-        setInputText={setInputText}
-        onClickAdd={onClickAdd}
-      />
+  const filteredTodos = todos.filter((todo) => {
+    if (filter === "all") return true;
+    if (filter === "active") return !todo.completed;
+    if (filter === "completed") return todo.completed;
+  });
 
-      <div
-        style={{
-          backgroundColor: "#f9f9f9",
-          padding: "16px",
-          borderRadius: "8px",
-        }}
-      >
-        <ul>
-          {todos.map((todo) => {
-            // indexはもう使いません
-            return (
-              <TodoItem
-                key={todo.id} // keyにはidを使う
-                todo={todo}
-                onClickComplete={onClickComplete}
-                onClickDelete={onClickDelete}
-              />
-            );
-          })}
-        </ul>
+  return (
+    <div className="min-h-screen bg-gray-100 py-8 px-4 font-sans text-gray-800">
+      <div className="max-w-lg mx-auto bg-white p-6 rounded-xl shadow-xl">
+        <h1 className="text-3xl font-bold text-center mb-6 text-blue-600">
+          買い物リスト
+        </h1>
+        <InputTodo
+          inputText={inputText}
+          setInputText={setInputText}
+          onClickAdd={onClickAdd}
+        />
+
+        <div className="flex justify-center space-x-2 mb-6">
+          <button
+            onClick={() => setFilter("all")}
+            className={`px-4 py-2 rounded-full transition-colors ${
+              filter === "all"
+                ? "bg-blue-500 text-white font-bold"
+                : "bg-gray-200 hover:bg-gray-300"
+            }`}
+          >
+            すべて
+          </button>
+          <button
+            onClick={() => setFilter("active")}
+            className={`px-4 py-2 rounded-full transition-colors ${
+              filter === "active"
+                ? "bg-blue-500 text-white font-bold"
+                : "bg-gray-200 hover:bg-gray-300"
+            }`}
+          >
+            未完了
+          </button>
+          <button
+            onClick={() => setFilter("completed")}
+            className={`px-4 py-2 rounded-full transition-colors ${
+              filter === "completed"
+                ? "bg-blue-500 text-white font-bold"
+                : "bg-gray-200 hover:bg-gray-300"
+            }`}
+          >
+            完了
+          </button>
+        </div>
+
+        <div className="bg-gray-50 rounded-lg p-4">
+          <ul>
+            {filteredTodos.map((todo) => {
+              // indexはもう使いません
+              return (
+                <TodoItem
+                  key={todo.id} // keyにはidを使う
+                  todo={todo}
+                  onClickComplete={onClickComplete}
+                  onClickDelete={onClickDelete}
+                />
+              );
+            })}
+          </ul>
+        </div>
       </div>
     </div>
   );
 };
+
 export default TodoList;
